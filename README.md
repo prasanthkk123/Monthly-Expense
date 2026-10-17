@@ -6,6 +6,14 @@ All your transaction records, monthly budgets, and preferences are stored **loca
 
 ---
 
+## 🔒 Security & Password Protection
+
+- **Default Master Password**: `Login2026`
+- **Lock / Unlock**: You can lock the application anytime with the lock icon in the top navigation bar.
+- **Change Password**: Click the **Key icon** (🔑) in the navigation bar to update your vault password at any time.
+
+---
+
 ## ✨ Features
 
 - **🇮🇳 Indian Rupee Formatting**: Native formatting with Lakhs and Crores support (e.g. `₹1,25,000`).
@@ -22,19 +30,10 @@ All your transaction records, monthly budgets, and preferences are stored **loca
   - Top payment method breakdowns.
 - **🎯 Category Budget Planner**:
   - Set monthly spending caps for Food & Dining, Groceries, Utilities, Transport, Shopping, Entertainment, etc.
-  - Color-coded progress bars:
-    - 🟢 **Green**: Under 80%
-    - 🟡 **Amber**: 80% – 99% (Near limit warning)
-    - 🔴 **Red**: Over 100% (Budget exceeded alert)
-- **⚡ Rapid Transaction Entry**:
-  - Type toggle (Expense / Income).
-  - Quick amount boosters (`+100`, `+500`, `+1000`, `+5000`).
-  - Pre-configured Indian categories & payment modes (UPI, Credit Card, Net Banking, Cash).
-- **🔍 Powerful Filters & Search**:
-  - Instant text search across merchants, notes, categories, and payment types.
-  - One-click filters: All / Expense / Income.
-  - Dropdown filters for specific categories and payment methods.
-  - Multi-criteria sorting (Newest, Oldest, Highest Amount, Lowest Amount).
+  - Color-coded progress bars (🟢 Under 80%, 🟡 80%–99%, 🔴 Over 100%).
+- **🗑️ Data Purge & Deletion Controls**:
+  - **Monthly-wise Data Deletion**: Delete all records belonging to any specific month (e.g., October 2026) directly from the **Data & Backup** modal or from the transaction list header.
+  - **Total Data Deletion**: Full reset option to erase all transaction records permanently.
 - **📁 100% Data Portability & Privacy**:
   - **Export to CSV**: Download standard spreadsheet files compatible with Microsoft Excel and Google Sheets.
   - **Full JSON Backup**: One-click complete snapshot of all transactions, custom categories, and budgets.
@@ -60,6 +59,7 @@ All your transaction records, monthly budgets, and preferences are stored **loca
    ```
    http://localhost:5173
    ```
+4. Enter password `Login2026` to unlock.
 
 ---
 
@@ -69,4 +69,4 @@ All your transaction records, monthly budgets, and preferences are stored **loca
 - **Styling**: [Tailwind CSS v4](https://tailwindcss.com/)
 - **Charts & Data Viz**: [Recharts](https://recharts.org/)
 - **Icons**: [Lucide React](https://lucide.dev/)
-- **Storage**: Browser LocalStorage (Offline-first, zero cloud dependencies)
+- **Storage**: Browser LocalStorage & SessionStorage (Offline-first, zero cloud dependencies)

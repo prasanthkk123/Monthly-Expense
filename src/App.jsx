@@ -11,8 +11,20 @@ import { TransactionList } from './components/TransactionList';
 import { TransactionModal } from './components/TransactionModal';
 import { BudgetModal } from './components/BudgetModal';
 import { DataBackupModal } from './components/DataBackupModal';
+import { LoginScreen } from './components/LoginScreen';
+import { ChangePasswordModal } from './components/ChangePasswordModal';
 
 export default function App() {
+  // Authentication & Security State (Password defaults to 'Login2026')
+  const [storedPassword, setStoredPassword] = useLocalStorage('rupeewise_password', 'Login2026');
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    try {
+      return sessionStorage.getItem('rupeewise_session_auth') === 'true';
+    } catch {
+      return false;
+    }
+  });
+
   // Persistent State in LocalStorage
   const [transactions, setTransactions] = useLocalStorage('rupeewise_transactions', () => getSampleTransactions());
   const [budgets, setBudgets] = useLocalStorage('rupeewise_budgets', DEFAULT_BUDGETS);
@@ -27,6 +39,7 @@ export default function App() {
   const [editingTransaction, setEditingTransaction] = useState(null);
   const [isBudgetModalOpen, setIsBudgetModalOpen] = useState(false);
   const [isBackupModalOpen, setIsBackupModalOpen] = useState(false);
+  const [isChangePasswordModalOpen, setIsChangePasswordModalOpen] = useState(false);
 
   // Handle Dark mode class on root HTML element
   useEffect(() => {
@@ -36,6 +49,31 @@ export default function App() {
       document.documentElement.classList.remove('dark');
     }
   }, [darkMode]);
+
+  // Login handler
+  const handleLogin = () => {
+    try {
+      sessionStorage.setItem('rupeewise_session_auth', 'true');
+    } catch (e) {
+      console.warn('Session storage write error', e);
+    }
+    setIsAuthenticated(true);
+  };
+
+  // Lock / Logout handler
+  const handleLock = () => {
+    try {
+      sessionStorage.removeItem('rupeewise_session_auth');
+    } catch (e) {
+      console.warn('Session storage remove error', e);
+    }
+    setIsAuthenticated(false);
+  };
+
+  // Password change handler
+  const handleChangePassword = (newPassword) => {
+    setStoredPassword(newPassword);
+  };
 
   // Compute available months dynamically from transactions
   const availableMonths = useMemo(() => {
@@ -93,6 +131,16 @@ export default function App() {
     }
   };
 
+  // Monthly Wise Data Deletion
+  const handleDeleteMonthlyData = (monthKey) => {
+    setTransactions((prev) => prev.filter((t) => !t.date || !t.date.startsWith(monthKey)));
+  };
+
+  // Total Data Deletion
+  const handleClearAllData = () => {
+    setTransactions([]);
+  };
+
   const handleSaveBudgets = (newBudgets) => {
     setBudgets(newBudgets);
   };
@@ -109,9 +157,15 @@ export default function App() {
     setBudgets(DEFAULT_BUDGETS);
   };
 
-  const handleClearAllData = () => {
-    setTransactions([]);
-  };
+  // If not authenticated, display login password screen
+  if (!isAuthenticated) {
+    return (
+      <LoginScreen
+        onLogin={handleLogin}
+        storedPassword={storedPassword}
+      />
+    );
+  }
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-200">
@@ -126,6 +180,8 @@ export default function App() {
         }}
         onOpenBudgetModal={() => setIsBudgetModalOpen(true)}
         onOpenBackupModal={() => setIsBackupModalOpen(true)}
+        onOpenChangePasswordModal={() => setIsChangePasswordModalOpen(true)}
+        onLock={handleLock}
         selectedMonth={selectedMonth}
         setSelectedMonth={setSelectedMonth}
         availableMonths={availableMonths}
@@ -163,6 +219,8 @@ export default function App() {
         {/* Transactions Table & Filters */}
         <TransactionList
           transactions={filteredTransactions}
+          selectedMonth={selectedMonth}
+          onDeleteMonthlyData={handleDeleteMonthlyData}
           onEditTransaction={handleEditTransaction}
           onDeleteTransaction={handleDeleteTransaction}
           onOpenAddModal={() => {
@@ -203,9 +261,19 @@ export default function App() {
         onClose={() => setIsBackupModalOpen(false)}
         transactions={transactions}
         budgets={budgets}
+        selectedMonth={selectedMonth}
+        availableMonths={availableMonths}
         onImportData={handleImportData}
         onLoadSampleData={handleLoadSampleData}
+        onDeleteMonthlyData={handleDeleteMonthlyData}
         onClearAllData={handleClearAllData}
+      />
+
+      <ChangePasswordModal
+        isOpen={isChangePasswordModalOpen}
+        onClose={() => setIsChangePasswordModalOpen(false)}
+        storedPassword={storedPassword}
+        onPasswordChanged={handleChangePassword}
       />
 
     </div>

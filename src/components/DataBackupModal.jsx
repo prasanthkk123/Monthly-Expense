@@ -8,22 +8,27 @@ import {
   FileSpreadsheet, 
   Database, 
   AlertCircle,
-  CheckCircle2
+  CheckCircle2,
+  CalendarX,
+  AlertTriangle
 } from 'lucide-react';
 import { downloadCSV, downloadJSONBackup } from '../utils/formatters';
-import { getSampleTransactions } from '../utils/sampleData';
 
 export const DataBackupModal = ({
   isOpen,
   onClose,
   transactions,
   budgets,
+  selectedMonth,
+  availableMonths,
   onImportData,
   onLoadSampleData,
+  onDeleteMonthlyData,
   onClearAllData,
 }) => {
   const fileInputRef = useRef(null);
   const [statusMessage, setStatusMessage] = useState(null);
+  const [monthToDelete, setMonthToDelete] = useState(selectedMonth !== 'all' ? selectedMonth : (availableMonths[0]?.value || ''));
 
   if (!isOpen) return null;
 
@@ -64,17 +69,42 @@ export const DataBackupModal = ({
     e.target.value = '';
   };
 
-  const handleClearWithConfirm = () => {
-    if (window.confirm('Are you sure you want to delete all transactions and reset? This cannot be undone.')) {
+  const countForMonthToDelete = transactions.filter(
+    (t) => t.date && t.date.startsWith(monthToDelete)
+  ).length;
+
+  const handleMonthlyDeleteWithConfirm = () => {
+    if (!monthToDelete) return;
+    const targetMonthObj = availableMonths.find((m) => m.value === monthToDelete);
+    const monthLabel = targetMonthObj ? targetMonthObj.label : monthToDelete;
+
+    if (countForMonthToDelete === 0) {
+      setStatusMessage({ type: 'error', text: `No transactions found for ${monthLabel}.` });
+      return;
+    }
+
+    if (window.confirm(`Are you sure you want to delete all ${countForMonthToDelete} transactions for ${monthLabel}? This action cannot be undone.`)) {
+      onDeleteMonthlyData(monthToDelete);
+      setStatusMessage({ type: 'success', text: `Deleted ${countForMonthToDelete} transactions for ${monthLabel}.` });
+    }
+  };
+
+  const handleTotalClearWithConfirm = () => {
+    if (transactions.length === 0) {
+      setStatusMessage({ type: 'error', text: 'There are no transactions to delete.' });
+      return;
+    }
+
+    if (window.confirm(`⚠️ DANGER: Are you sure you want to delete ALL ${transactions.length} transactions? This will erase all your transaction history permanently.`)) {
       onClearAllData();
-      setStatusMessage({ type: 'success', text: 'All transactions cleared.' });
+      setStatusMessage({ type: 'success', text: 'All transaction data has been permanently cleared.' });
     }
   };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-200">
       <div 
-        className="w-full max-w-lg bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden flex flex-col"
+        className="w-full max-w-lg bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden flex flex-col max-h-[90vh]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
@@ -85,10 +115,10 @@ export const DataBackupModal = ({
             </div>
             <div>
               <h3 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white">
-                Data Backup & Portability
+                Data Management & Portability
               </h3>
               <p className="text-xs text-slate-500 dark:text-slate-400">
-                100% private: your data lives on your device
+                Export, backup, import, or purge records
               </p>
             </div>
           </div>
@@ -113,10 +143,10 @@ export const DataBackupModal = ({
         )}
 
         {/* Options Content */}
-        <div className="p-5 sm:p-6 space-y-4">
+        <div className="p-5 sm:p-6 space-y-4 overflow-y-auto">
           
           {/* 1. Export CSV */}
-          <div className="flex items-center justify-between p-4 rounded-2xl border border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40">
+          <div className="flex items-center justify-between p-3.5 rounded-2xl border border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40">
             <div className="flex items-center gap-3">
               <div className="p-2.5 rounded-xl bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400">
                 <FileSpreadsheet className="w-5 h-5" />
@@ -136,14 +166,14 @@ export const DataBackupModal = ({
           </div>
 
           {/* 2. Export JSON Backup */}
-          <div className="flex items-center justify-between p-4 rounded-2xl border border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40">
+          <div className="flex items-center justify-between p-3.5 rounded-2xl border border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40">
             <div className="flex items-center gap-3">
               <div className="p-2.5 rounded-xl bg-indigo-100 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400">
                 <Database className="w-5 h-5" />
               </div>
               <div>
                 <h4 className="font-bold text-sm text-slate-800 dark:text-slate-200">Full JSON Backup</h4>
-                <p className="text-xs text-slate-500 dark:text-slate-400">Includes all records, categories, & budgets</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400">Complete backup of records and budgets</p>
               </div>
             </div>
             <button
@@ -155,15 +185,15 @@ export const DataBackupModal = ({
             </button>
           </div>
 
-          {/* 3. Import JSON Backup */}
-          <div className="flex items-center justify-between p-4 rounded-2xl border border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40">
+          {/* 3. Restore from JSON */}
+          <div className="flex items-center justify-between p-3.5 rounded-2xl border border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40">
             <div className="flex items-center gap-3">
               <div className="p-2.5 rounded-xl bg-teal-100 dark:bg-teal-950/60 text-teal-600 dark:text-teal-400">
                 <Upload className="w-5 h-5" />
               </div>
               <div>
                 <h4 className="font-bold text-sm text-slate-800 dark:text-slate-200">Restore from JSON</h4>
-                <p className="text-xs text-slate-500 dark:text-slate-400">Upload previously exported RupeeWise file</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400">Upload previously exported backup</p>
               </div>
             </div>
             <input
@@ -182,26 +212,92 @@ export const DataBackupModal = ({
             </button>
           </div>
 
-          {/* 4. Demo Data & Reset Actions */}
-          <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-3">
+          {/* Demo Data Button */}
+          <div className="pt-1">
             <button
               onClick={() => {
                 onLoadSampleData();
-                setStatusMessage({ type: 'success', text: 'Sample data loaded!' });
+                setStatusMessage({ type: 'success', text: 'Sample demo data loaded!' });
               }}
-              className="w-full sm:w-auto px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-semibold text-xs flex items-center justify-center gap-1.5 shadow-xs cursor-pointer"
+              className="w-full px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-semibold text-xs flex items-center justify-center gap-2 shadow-xs cursor-pointer"
             >
-              <Sparkles className="w-3.5 h-3.5" />
+              <Sparkles className="w-4 h-4" />
               Load Sample Demo Data
             </button>
+          </div>
 
-            <button
-              onClick={handleClearWithConfirm}
-              className="w-full sm:w-auto px-4 py-2 rounded-xl border border-rose-200 dark:border-rose-900/60 text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 font-semibold text-xs flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
-            >
-              <Trash2 className="w-3.5 h-3.5" />
-              Clear All Data
-            </button>
+          {/* ⚠️ DANGER ZONE: Monthly & Total Data Deletion */}
+          <div className="pt-3 border-t border-slate-200 dark:border-slate-800 space-y-3">
+            <div className="flex items-center gap-2 text-rose-600 dark:text-rose-400">
+              <AlertTriangle className="w-4 h-4" />
+              <h4 className="text-xs font-bold uppercase tracking-wider">
+                Danger Zone: Data Purge
+              </h4>
+            </div>
+
+            {/* Monthly Deletion Option */}
+            <div className="p-3.5 rounded-2xl border border-rose-200/70 dark:border-rose-900/40 bg-rose-50/50 dark:bg-rose-950/20 space-y-2.5">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h5 className="font-bold text-xs sm:text-sm text-slate-900 dark:text-slate-100">
+                    Delete Monthly Data
+                  </h5>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                    Purge all records for a specific month
+                  </p>
+                </div>
+                <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-rose-100 dark:bg-rose-900/50 text-rose-700 dark:text-rose-300">
+                  {countForMonthToDelete} records
+                </span>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <select
+                  value={monthToDelete}
+                  onChange={(e) => setMonthToDelete(e.target.value)}
+                  className="flex-1 py-1.5 px-3 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-hidden focus:ring-2 focus:ring-rose-500"
+                >
+                  {availableMonths.map((m) => (
+                    <option key={m.value} value={m.value}>
+                      {m.label}
+                    </option>
+                  ))}
+                </select>
+
+                <button
+                  type="button"
+                  onClick={handleMonthlyDeleteWithConfirm}
+                  disabled={countForMonthToDelete === 0}
+                  className="px-3 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-700 disabled:opacity-50 text-white font-semibold text-xs transition-colors cursor-pointer flex items-center gap-1.5 shrink-0"
+                >
+                  <CalendarX className="w-3.5 h-3.5" />
+                  Delete Month
+                </button>
+              </div>
+            </div>
+
+            {/* Total Data Deletion Option */}
+            <div className="p-3.5 rounded-2xl border border-rose-200/70 dark:border-rose-900/40 bg-rose-50/50 dark:bg-rose-950/20 flex items-center justify-between gap-3">
+              <div>
+                <h5 className="font-bold text-xs sm:text-sm text-slate-900 dark:text-slate-100">
+                  Delete All Data (Total Reset)
+                </h5>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                  Permanently erase all {transactions.length} records across all months
+                </p>
+              </div>
+
+              <button
+                type="button"
+                onClick={handleTotalClearWithConfirm}
+                disabled={transactions.length === 0}
+                className="px-3.5 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 disabled:opacity-50 text-white font-semibold text-xs transition-colors cursor-pointer flex items-center gap-1.5 shrink-0 shadow-xs"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+                Clear All
+              </button>
+            </div>
+
           </div>
 
         </div>

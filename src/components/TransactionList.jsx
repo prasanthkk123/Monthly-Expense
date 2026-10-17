@@ -20,6 +20,8 @@ export const TransactionList = ({
   onEditTransaction,
   onDeleteTransaction,
   onOpenAddModal,
+  selectedMonth = 'all',
+  onDeleteMonthlyData,
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [typeFilter, setTypeFilter] = useState('all'); // all | expense | income
@@ -99,6 +101,21 @@ export const TransactionList = ({
           </div>
 
           <div className="flex items-center gap-2">
+            {selectedMonth !== 'all' && filteredTransactions.length > 0 && (
+              <button
+                onClick={() => {
+                  if (window.confirm(`Are you sure you want to delete all ${filteredTransactions.length} records for this month? This cannot be undone.`)) {
+                    onDeleteMonthlyData(selectedMonth);
+                  }
+                }}
+                className="px-3 py-1.5 rounded-lg border border-rose-200 dark:border-rose-900/60 text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 font-medium text-xs flex items-center gap-1.5 cursor-pointer transition-colors"
+                title="Delete all records for this selected month"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+                <span>Delete Month</span>
+              </button>
+            )}
+
             <button
               onClick={() => downloadCSV(filteredTransactions)}
               disabled={filteredTransactions.length === 0}

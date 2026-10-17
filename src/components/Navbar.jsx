@@ -1,12 +1,12 @@
 import React from 'react';
 import { 
-  Wallet, 
   PlusCircle, 
   SlidersHorizontal, 
   Download, 
   Moon, 
   Sun,
-  Sparkles
+  Lock,
+  KeyRound
 } from 'lucide-react';
 
 export const Navbar = ({ 
@@ -15,6 +15,8 @@ export const Navbar = ({
   onOpenAddModal, 
   onOpenBudgetModal, 
   onOpenBackupModal,
+  onOpenChangePasswordModal,
+  onLock,
   selectedMonth,
   setSelectedMonth,
   availableMonths
@@ -35,7 +37,7 @@ export const Navbar = ({
                   Rupee<span className="text-emerald-500">Wise</span>
                 </span>
                 <span className="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300">
-                  Offline • Private
+                  Protected
                 </span>
               </div>
               <p className="text-xs text-slate-500 dark:text-slate-400 hidden sm:block">
@@ -44,8 +46,10 @@ export const Navbar = ({
             </div>
           </div>
 
-          {/* Month Filter Selector */}
-          <div className="flex items-center gap-2 sm:gap-3">
+          {/* Controls */}
+          <div className="flex items-center gap-2 sm:gap-2.5">
+            
+            {/* Month Filter Selector */}
             <div className="relative">
               <select
                 aria-label="Filter transactions by month"
@@ -80,11 +84,31 @@ export const Navbar = ({
             {/* Backup / Export Menu Button */}
             <button
               onClick={onOpenBackupModal}
-              title="Backup, Export CSV/JSON"
+              title="Backup, Export CSV/JSON, Purge Data"
               className="p-2 sm:px-3 sm:py-2 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-medium text-xs sm:text-sm flex items-center gap-1.5 transition-colors cursor-pointer"
             >
               <Download className="w-4 h-4 text-teal-500" />
-              <span className="hidden md:inline">Backup & Export</span>
+              <span className="hidden md:inline">Data & Backup</span>
+            </button>
+
+            {/* Change Password Button */}
+            <button
+              onClick={onOpenChangePasswordModal}
+              title="Change Login Password"
+              className="p-2 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+              aria-label="Change password"
+            >
+              <KeyRound className="w-4 h-4 text-amber-500" />
+            </button>
+
+            {/* Lock / Logout Button */}
+            <button
+              onClick={onLock}
+              title="Lock Screen"
+              className="p-2 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+              aria-label="Lock screen"
+            >
+              <Lock className="w-4 h-4 text-rose-500" />
             </button>
 
             {/* Dark Mode Toggle */}

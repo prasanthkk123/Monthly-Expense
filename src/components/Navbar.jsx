@@ -1,28 +1,25 @@
 import React, { useState } from 'react';
 import { 
   PlusCircle, 
-  SlidersHorizontal, 
   Download, 
   Moon, 
-  Sun,
-  Lock,
-  KeyRound,
-  Menu,
-  X,
-  Calendar
+  Sun, 
+  Lock, 
+  KeyRound, 
+  Menu, 
+  X 
 } from 'lucide-react';
 
 export const Navbar = ({ 
   darkMode, 
   setDarkMode, 
   onOpenAddModal, 
-  onOpenBudgetModal, 
-  onOpenBackupModal,
-  onOpenChangePasswordModal,
-  onLock,
-  selectedMonth,
-  setSelectedMonth,
-  availableMonths
+  onOpenBackupModal, 
+  onOpenChangePasswordModal, 
+  onLock, 
+  selectedMonth, 
+  setSelectedMonth, 
+  availableMonths 
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -46,7 +43,7 @@ export const Navbar = ({
                 </span>
               </div>
               <p className="text-[11px] text-slate-500 dark:text-slate-400 hidden sm:block">
-                Personal Expense Tracker & Budget Planner
+                Personal Expense Tracker
               </p>
             </div>
           </div>
@@ -74,16 +71,6 @@ export const Navbar = ({
                 </svg>
               </div>
             </div>
-
-            {/* Budgets Target Button */}
-            <button
-              onClick={onOpenBudgetModal}
-              title="Set Monthly Budgets"
-              className="px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-medium text-xs sm:text-sm flex items-center gap-1.5 transition-colors cursor-pointer"
-            >
-              <SlidersHorizontal className="w-4 h-4 text-emerald-500" />
-              <span>Budgets</span>
-            </button>
 
             {/* Backup / Export Menu Button */}
             <button
@@ -194,27 +181,16 @@ export const Navbar = ({
             </div>
 
             {/* Action Buttons Grid */}
-            <div className="grid grid-cols-2 gap-2 pt-1">
-              <button
-                onClick={() => {
-                  onOpenBudgetModal();
-                  setMobileMenuOpen(false);
-                }}
-                className="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 bg-slate-50 dark:bg-slate-800/60 font-medium text-xs flex items-center justify-center gap-2 cursor-pointer"
-              >
-                <SlidersHorizontal className="w-4 h-4 text-emerald-500" />
-                <span>Budgets</span>
-              </button>
-
+            <div className="grid grid-cols-3 gap-2 pt-1">
               <button
                 onClick={() => {
                   onOpenBackupModal();
                   setMobileMenuOpen(false);
                 }}
-                className="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 bg-slate-50 dark:bg-slate-800/60 font-medium text-xs flex items-center justify-center gap-2 cursor-pointer"
+                className="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 bg-slate-50 dark:bg-slate-800/60 font-medium text-xs flex flex-col items-center justify-center gap-1.5 cursor-pointer text-center"
               >
                 <Download className="w-4 h-4 text-teal-500" />
-                <span>Data & Backup</span>
+                <span className="text-[11px] truncate">Backup</span>
               </button>
 
               <button
@@ -222,10 +198,10 @@ export const Navbar = ({
                   onOpenChangePasswordModal();
                   setMobileMenuOpen(false);
                 }}
-                className="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 bg-slate-50 dark:bg-slate-800/60 font-medium text-xs flex items-center justify-center gap-2 cursor-pointer"
+                className="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 bg-slate-50 dark:bg-slate-800/60 font-medium text-xs flex flex-col items-center justify-center gap-1.5 cursor-pointer text-center"
               >
                 <KeyRound className="w-4 h-4 text-amber-500" />
-                <span>Password</span>
+                <span className="text-[11px] truncate">Password</span>
               </button>
 
               <button
@@ -233,10 +209,10 @@ export const Navbar = ({
                   onLock();
                   setMobileMenuOpen(false);
                 }}
-                className="p-2.5 rounded-xl border border-rose-200 dark:border-rose-900/60 text-rose-600 dark:text-rose-400 bg-rose-50/50 dark:bg-rose-950/20 font-medium text-xs flex items-center justify-center gap-2 cursor-pointer"
+                className="p-2.5 rounded-xl border border-rose-200 dark:border-rose-900/60 text-rose-600 dark:text-rose-400 bg-rose-50/50 dark:bg-rose-950/20 font-medium text-xs flex flex-col items-center justify-center gap-1.5 cursor-pointer text-center"
               >
                 <Lock className="w-4 h-4" />
-                <span>Lock App</span>
+                <span className="text-[11px] truncate">Lock</span>
               </button>
             </div>
           </div>

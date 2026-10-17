@@ -32,12 +32,3 @@ export const PAYMENT_METHODS = [
   { id: 'cash', name: 'Cash', icon: 'Banknote' },
   { id: 'other', name: 'Other', icon: 'Wallet' },
 ];
-
-export const DEFAULT_BUDGETS = {
-  'Food & Dining': 12000,
-  'Groceries & Mart': 8000,
-  'Bills & Utilities': 4500,
-  'Fuel & Transport': 4000,
-  'Shopping & Apparel': 6000,
-  'Entertainment & OTT': 2500,
-};

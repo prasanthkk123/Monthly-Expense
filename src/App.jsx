@@ -1,15 +1,12 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useLocalStorage } from './hooks/useLocalStorage';
-import { DEFAULT_BUDGETS } from './constants/categories';
 import { getSampleTransactions } from './utils/sampleData';
 import { Navbar } from './components/Navbar';
 import { SummaryCards } from './components/SummaryCards';
 import { QuickInsights } from './components/QuickInsights';
 import { AnalyticsCharts } from './components/AnalyticsCharts';
-import { BudgetOverview } from './components/BudgetOverview';
 import { TransactionList } from './components/TransactionList';
 import { TransactionModal } from './components/TransactionModal';
-import { BudgetModal } from './components/BudgetModal';
 import { DataBackupModal } from './components/DataBackupModal';
 import { LoginScreen } from './components/LoginScreen';
 import { ChangePasswordModal } from './components/ChangePasswordModal';
@@ -25,7 +22,6 @@ export default function App() {
 
   // Persistent State in LocalStorage
   const [transactions, setTransactions] = useLocalStorage('rupeewise_transactions', () => getSampleTransactions());
-  const [budgets, setBudgets] = useLocalStorage('rupeewise_budgets', DEFAULT_BUDGETS);
   const [darkMode, setDarkMode] = useLocalStorage('rupeewise_darkmode', false);
 
   // Current selected month: defaults to current month YYYY-MM
@@ -35,7 +31,6 @@ export default function App() {
   // Modals state
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [editingTransaction, setEditingTransaction] = useState(null);
-  const [isBudgetModalOpen, setIsBudgetModalOpen] = useState(false);
   const [isBackupModalOpen, setIsBackupModalOpen] = useState(false);
   const [isChangePasswordModalOpen, setIsChangePasswordModalOpen] = useState(false);
 
@@ -140,20 +135,12 @@ export default function App() {
     setTransactions([]);
   };
 
-  const handleSaveBudgets = (newBudgets) => {
-    setBudgets(newBudgets);
-  };
-
-  const handleImportData = (newTransactions, newBudgets) => {
+  const handleImportData = (newTransactions) => {
     setTransactions(newTransactions);
-    if (newBudgets && Object.keys(newBudgets).length > 0) {
-      setBudgets(newBudgets);
-    }
   };
 
   const handleLoadSampleData = () => {
     setTransactions(getSampleTransactions());
-    setBudgets(DEFAULT_BUDGETS);
   };
 
   // If not authenticated, display login password screen
@@ -177,7 +164,6 @@ export default function App() {
           setEditingTransaction(null);
           setIsAddModalOpen(true);
         }}
-        onOpenBudgetModal={() => setIsBudgetModalOpen(true)}
         onOpenBackupModal={() => setIsBackupModalOpen(true)}
         onOpenChangePasswordModal={() => setIsChangePasswordModalOpen(true)}
         onLock={handleLock}
@@ -198,7 +184,6 @@ export default function App() {
         {/* Smart Insights Banner */}
         <QuickInsights
           transactions={filteredTransactions}
-          budgets={budgets}
         />
 
         {/* Visual Analytics Charts */}
@@ -206,13 +191,6 @@ export default function App() {
           transactions={filteredTransactions}
           allTransactions={transactions}
           darkMode={darkMode}
-        />
-
-        {/* Category Budget Tracker */}
-        <BudgetOverview
-          transactions={filteredTransactions}
-          budgets={budgets}
-          onOpenBudgetModal={() => setIsBudgetModalOpen(true)}
         />
 
         {/* Transactions Table & Filters */}
@@ -260,18 +238,10 @@ export default function App() {
         initialData={editingTransaction}
       />
 
-      <BudgetModal
-        isOpen={isBudgetModalOpen}
-        onClose={() => setIsBudgetModalOpen(false)}
-        budgets={budgets}
-        onSaveBudgets={handleSaveBudgets}
-      />
-
       <DataBackupModal
         isOpen={isBackupModalOpen}
         onClose={() => setIsBackupModalOpen(false)}
         transactions={transactions}
-        budgets={budgets}
         selectedMonth={selectedMonth}
         availableMonths={availableMonths}
         onImportData={handleImportData}

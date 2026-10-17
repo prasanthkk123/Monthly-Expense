@@ -1,8 +1,8 @@
 import React from 'react';
-import { Lightbulb, TrendingUp, AlertTriangle, ShieldCheck } from 'lucide-react';
+import { Lightbulb, CreditCard } from 'lucide-react';
 import { formatINR } from '../utils/formatters';
 
-export const QuickInsights = ({ transactions, budgets }) => {
+export const QuickInsights = ({ transactions }) => {
   const expenseTransactions = transactions.filter((t) => t.type === 'expense');
   const incomeTransactions = transactions.filter((t) => t.type === 'income');
 
@@ -30,15 +30,7 @@ export const QuickInsights = ({ transactions, budgets }) => {
   const topPayment = sortedPayments[0];
 
   const savingsRate = totalIncome > 0 ? Math.round(((totalIncome - totalExpense) / totalIncome) * 100) : 0;
-
-  // Check budgets
-  const exceededBudgets = [];
-  Object.entries(budgets || {}).forEach(([cat, limit]) => {
-    const spent = catMap[cat] || 0;
-    if (limit > 0 && spent > limit) {
-      exceededBudgets.push({ cat, over: spent - limit });
-    }
-  });
+  const avgExpensePerTx = expenseTransactions.length > 0 ? Math.round(totalExpense / expenseTransactions.length) : 0;
 
   return (
     <div className="bg-gradient-to-r from-emerald-500/10 via-teal-500/10 to-indigo-500/10 dark:from-emerald-950/30 dark:via-teal-950/30 dark:to-indigo-950/30 rounded-2xl p-4 sm:p-5 border border-emerald-500/20 dark:border-emerald-500/10">
@@ -86,32 +78,25 @@ export const QuickInsights = ({ transactions, budgets }) => {
           </span>
         </div>
 
-        {/* Payment / Budget Alert */}
+        {/* Primary Payment Mode or Average Ticket Size */}
         <div className="p-3 bg-white/70 dark:bg-slate-900/70 rounded-xl border border-white/50 dark:border-slate-800 backdrop-blur-xs">
-          {exceededBudgets.length > 0 ? (
-            <>
-              <span className="font-bold text-rose-600 dark:text-rose-400 block mb-0.5 flex items-center gap-1">
-                <AlertTriangle className="w-3.5 h-3.5" /> Budget Alert
-              </span>
-              <span>
-                <b>{exceededBudgets[0].cat}</b> has exceeded its monthly limit by {formatINR(exceededBudgets[0].over)}.
-              </span>
-            </>
-          ) : topPayment ? (
+          {topPayment ? (
             <>
               <span className="font-bold text-slate-900 dark:text-white block mb-0.5">
                 Primary Payment Mode
               </span>
               <span>
-                Most of your day-to-day transactions ({topPayment[1]} times) are completed via <b>{topPayment[0]}</b>.
+                Most of your day-to-day expenses ({topPayment[1]} times) are completed via <b>{topPayment[0]}</b>. Average expense is <b>{formatINR(avgExpensePerTx)}</b>.
               </span>
             </>
           ) : (
             <>
               <span className="font-bold text-slate-900 dark:text-white block mb-0.5">
-                Budgets On Track
+                Spending Activity
               </span>
-              <span>All your monitored categories are within spending caps.</span>
+              <span>
+                Recorded {transactions.length} total transactions this period.
+              </span>
             </>
           )}
         </div>

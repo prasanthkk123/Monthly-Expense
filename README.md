@@ -1,14 +1,15 @@
-# RupeeWise 💰 — Personal Expense Tracker & Budget Planner
+# Personal Expense Tracker 💰
 
-RupeeWise is a fast, beautiful, and 100% private personal expense tracker designed specifically for personal financial management in Indian Rupees (₹ INR). 
+A fast, clean, and 100% private personal expense tracker designed specifically for personal financial management in Indian Rupees (₹ INR).
 
-All your transaction records, monthly budgets, and preferences are stored **locally in your browser's LocalStorage**. Your sensitive financial data never leaves your computer.
+All your transaction records and preferences are stored **locally in your browser's LocalStorage**. Your sensitive financial data never leaves your computer.
 
 ---
 
 ## 🔒 Security & Password Protection
 
 - **Default Master Password**: `Login2026`
+- **Auto-Logout on Refresh**: Reopening or refreshing the page immediately requires authentication.
 - **Lock / Unlock**: You can lock the application anytime with the lock icon in the top navigation bar.
 - **Change Password**: Click the **Key icon** (🔑) in the navigation bar to update your vault password at any time.
 
@@ -28,18 +29,16 @@ All your transaction records, monthly budgets, and preferences are stored **loca
   - **Category Spending Donut Chart** (Powered by Recharts) with color-coded categories and interactive tooltips.
   - **Income vs. Expense Trend Bar Chart** across recent months to monitor your financial velocity.
   - Top payment method breakdowns.
-- **🎯 Category Budget Planner**:
-  - Set monthly spending caps for Food & Dining, Groceries, Utilities, Transport, Shopping, Entertainment, etc.
-  - Color-coded progress bars (🟢 Under 80%, 🟡 80%–99%, 🔴 Over 100%).
 - **🗑️ Data Purge & Deletion Controls**:
   - **Monthly-wise Data Deletion**: Delete all records belonging to any specific month (e.g., October 2026) directly from the **Data & Backup** modal or from the transaction list header.
   - **Total Data Deletion**: Full reset option to erase all transaction records permanently.
 - **📁 100% Data Portability & Privacy**:
-  - **Export to CSV**: Download standard spreadsheet files compatible with Microsoft Excel and Google Sheets.
-  - **Full JSON Backup**: One-click complete snapshot of all transactions, custom categories, and budgets.
+  - **Export to CSV**: Download standard spreadsheet files compatible with Microsoft Excel and Google Sheets without any SYLK errors.
+  - **Full JSON Backup**: One-click complete snapshot of all transactions.
   - **Restore / Import**: Load previous JSON backups anytime.
   - **Load Realistic Demo Data**: Instant one-click sample data for immediate exploration.
 - **🌙 Dark & Light Mode**: Built-in sleek dark mode toggle for comfortable viewing.
+- **📱 Fully Mobile Responsive**: Slide-down menu drawer, 2-column mobile KPI cards, and floating quick-add button (FAB).
 
 ---
 
@@ -69,4 +68,4 @@ All your transaction records, monthly budgets, and preferences are stored **loca
 - **Styling**: [Tailwind CSS v4](https://tailwindcss.com/)
 - **Charts & Data Viz**: [Recharts](https://recharts.org/)
 - **Icons**: [Lucide React](https://lucide.dev/)
-- **Storage**: Browser LocalStorage & SessionStorage (Offline-first, zero cloud dependencies)
+- **Storage**: Browser LocalStorage (Offline-first, zero cloud dependencies)

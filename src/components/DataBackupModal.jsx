@@ -18,7 +18,6 @@ export const DataBackupModal = ({
   isOpen,
   onClose,
   transactions,
-  budgets,
   selectedMonth,
   availableMonths,
   onImportData,
@@ -37,7 +36,6 @@ export const DataBackupModal = ({
       version: '1.0',
       exportDate: new Date().toISOString(),
       transactions,
-      budgets,
     });
     setStatusMessage({ type: 'success', text: 'JSON backup downloaded successfully!' });
   };
@@ -173,7 +171,7 @@ export const DataBackupModal = ({
               </div>
               <div>
                 <h4 className="font-bold text-sm text-slate-800 dark:text-slate-200">Full JSON Backup</h4>
-                <p className="text-xs text-slate-500 dark:text-slate-400">Complete backup of records and budgets</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400">Complete backup of all transactions</p>
               </div>
             </div>
             <button

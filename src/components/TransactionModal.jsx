@@ -157,6 +157,7 @@ export const TransactionModal = ({
               <input
                 type="number"
                 step="any"
+                inputMode="decimal"
                 required
                 autoFocus
                 placeholder="0.00"

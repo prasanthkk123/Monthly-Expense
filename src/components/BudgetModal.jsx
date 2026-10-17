@@ -103,6 +103,7 @@ export const BudgetModal = ({
                     type="number"
                     min="0"
                     step="500"
+                    inputMode="numeric"
                     placeholder="0"
                     value={currentVal === 0 ? '' : currentVal}
                     onChange={(e) => handleInputChange(cat.name, e.target.value)}

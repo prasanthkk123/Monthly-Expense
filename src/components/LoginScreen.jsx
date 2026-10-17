@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Lock, Eye, EyeOff, ShieldCheck, ArrowRight, KeyRound } from 'lucide-react';
+import { Lock, Eye, EyeOff, ShieldCheck, ArrowRight } from 'lucide-react';
 
 export const LoginScreen = ({ onLogin, storedPassword }) => {
   const [password, setPassword] = useState('');
@@ -18,21 +18,21 @@ export const LoginScreen = ({ onLogin, storedPassword }) => {
 
   return (
     <div className="min-h-screen bg-slate-100 dark:bg-slate-950 flex items-center justify-center p-4">
-      <div className="w-full max-w-md bg-white dark:bg-slate-900 rounded-3xl shadow-xl border border-slate-200/80 dark:border-slate-800 p-7 sm:p-8 relative overflow-hidden">
+      <div className="w-full max-w-md bg-white dark:bg-slate-900 rounded-3xl shadow-xl border border-slate-200/80 dark:border-slate-800 p-6 sm:p-8 relative overflow-hidden">
         
         {/* Decorative Top Accent */}
         <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-emerald-500 via-teal-500 to-indigo-500" />
 
         {/* Icon & App Brand */}
         <div className="flex flex-col items-center text-center mb-6">
-          <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-emerald-600 via-teal-500 to-cyan-500 flex items-center justify-center shadow-lg shadow-emerald-500/25 text-white font-extrabold text-3xl mb-4">
+          <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-tr from-emerald-600 via-teal-500 to-cyan-500 flex items-center justify-center shadow-lg shadow-emerald-500/25 text-white font-extrabold text-2xl sm:text-3xl mb-3 sm:mb-4">
             ₹
           </div>
-          <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-            Rupee<span className="text-emerald-500">Wise</span>
+          <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+            Personal Expense <span className="text-emerald-500">Tracker</span>
           </h1>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-            Personal Expense Tracker • Protected Vault
+            Secure Personal Finance & Budget Planner
           </p>
         </div>
 
@@ -87,7 +87,7 @@ export const LoginScreen = ({ onLogin, storedPassword }) => {
         {/* Security badge & note */}
         <div className="mt-6 pt-5 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-center gap-1.5 text-xs text-slate-400">
           <ShieldCheck className="w-4 h-4 text-emerald-500" />
-          <span>Password protected client-side storage</span>
+          <span>Password protected client-side vault</span>
         </div>
 
       </div>

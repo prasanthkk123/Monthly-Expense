@@ -13,17 +13,15 @@ import { BudgetModal } from './components/BudgetModal';
 import { DataBackupModal } from './components/DataBackupModal';
 import { LoginScreen } from './components/LoginScreen';
 import { ChangePasswordModal } from './components/ChangePasswordModal';
+import { Plus } from 'lucide-react';
 
 export default function App() {
-  // Authentication & Security State (Password defaults to 'Login2026')
+  // Authentication & Security State
+  // Default password is 'Login2026'
   const [storedPassword, setStoredPassword] = useLocalStorage('rupeewise_password', 'Login2026');
-  const [isAuthenticated, setIsAuthenticated] = useState(() => {
-    try {
-      return sessionStorage.getItem('rupeewise_session_auth') === 'true';
-    } catch {
-      return false;
-    }
-  });
+  
+  // Pure in-memory session: resets to false on every page refresh!
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   // Persistent State in LocalStorage
   const [transactions, setTransactions] = useLocalStorage('rupeewise_transactions', () => getSampleTransactions());
@@ -41,32 +39,33 @@ export default function App() {
   const [isBackupModalOpen, setIsBackupModalOpen] = useState(false);
   const [isChangePasswordModalOpen, setIsChangePasswordModalOpen] = useState(false);
 
-  // Handle Dark mode class on root HTML element
+  // Handle Dark mode class on root HTML element and body
   useEffect(() => {
+    const root = document.documentElement;
+    const body = document.body;
     if (darkMode) {
-      document.documentElement.classList.add('dark');
+      root.classList.add('dark');
+      body.classList.add('dark');
     } else {
-      document.documentElement.classList.remove('dark');
+      root.classList.remove('dark');
+      body.classList.remove('dark');
     }
   }, [darkMode]);
 
+  // Clean any old session storage tokens on mount
+  useEffect(() => {
+    try {
+      sessionStorage.removeItem('rupeewise_session_auth');
+    } catch {}
+  }, []);
+
   // Login handler
   const handleLogin = () => {
-    try {
-      sessionStorage.setItem('rupeewise_session_auth', 'true');
-    } catch (e) {
-      console.warn('Session storage write error', e);
-    }
     setIsAuthenticated(true);
   };
 
   // Lock / Logout handler
   const handleLock = () => {
-    try {
-      sessionStorage.removeItem('rupeewise_session_auth');
-    } catch (e) {
-      console.warn('Session storage remove error', e);
-    }
     setIsAuthenticated(false);
   };
 
@@ -168,7 +167,7 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-200">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-200 pb-16 md:pb-0">
       
       {/* Top Sticky Navbar */}
       <Navbar
@@ -188,7 +187,7 @@ export default function App() {
       />
 
       {/* Main Dashboard Container */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6 sm:space-y-8">
+      <main className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8 space-y-4 sm:space-y-8">
         
         {/* KPI / Metric Cards */}
         <SummaryCards
@@ -234,9 +233,21 @@ export default function App() {
       {/* Footer */}
       <footer className="border-t border-slate-200 dark:border-slate-800 py-6 text-center text-xs text-slate-500 dark:text-slate-400">
         <p>
-          RupeeWise Personal Expense Tracker • 100% Client-Side & Private • Stored securely in your browser
+          Personal Expense Tracker • 100% Client-Side & Private • Stored securely in your browser
         </p>
       </footer>
+
+      {/* Mobile Floating Action Button (FAB) */}
+      <button
+        onClick={() => {
+          setEditingTransaction(null);
+          setIsAddModalOpen(true);
+        }}
+        aria-label="Add transaction"
+        className="md:hidden fixed bottom-5 right-5 z-40 w-13 h-13 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white shadow-xl shadow-emerald-600/40 flex items-center justify-center active:scale-90 transition-all cursor-pointer"
+      >
+        <Plus className="w-6 h-6 stroke-[2.5]" />
+      </button>
 
       {/* Modals */}
       <TransactionModal

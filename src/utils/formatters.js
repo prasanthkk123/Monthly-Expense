@@ -71,43 +71,74 @@ export const getCategoryMeta = (categoryName, type = 'expense') => {
 };
 
 /**
- * Generate CSV and trigger browser download
+ * Escape CSV field according to RFC 4180
+ */
+const escapeCSVField = (val) => {
+  if (val === null || val === undefined) return '""';
+  const str = String(val);
+  // If string contains comma, quote, or newline, wrap in quotes and escape quotes
+  return `"${str.replace(/"/g, '""')}"`;
+};
+
+/**
+ * Generate CSV and trigger browser download.
+ * Formatted cleanly with UTF-8 BOM to prevent Microsoft Excel SYLK format errors.
  */
 export const downloadCSV = (transactions) => {
-  const headers = ['ID', 'Date', 'Type', 'Title', 'Category', 'Amount (INR)', 'Payment Method', 'Notes'];
-  
-  const rows = transactions.map((t) => [
-    `"${t.id || ''}"`,
-    `"${t.date || ''}"`,
-    `"${t.type || 'expense'}"`,
-    `"${(t.title || '').replace(/"/g, '""')}"`,
-    `"${(t.category || '').replace(/"/g, '""')}"`,
-    Number(t.amount || 0).toFixed(2),
-    `"${(t.paymentMethod || '').replace(/"/g, '""')}"`,
-    `"${(t.notes || '').replace(/"/g, '""')}"`,
-  ]);
+  // NOTE: Microsoft Excel mistakes any CSV starting with "ID" as a SYLK file format!
+  // Starting with "Date" or "Transaction ID" completely avoids this error.
+  const headers = [
+    'Date',
+    'Type',
+    'Title',
+    'Category',
+    'Amount (INR)',
+    'Payment Method',
+    'Notes',
+    'Transaction ID'
+  ];
 
-  const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map((e) => e.join(','))].join('\n');
-  const encodedUri = encodeURI(csvContent);
+  const headerRow = headers.map(escapeCSVField).join(',');
+
+  const rows = transactions.map((t) => [
+    escapeCSVField(t.date || ''),
+    escapeCSVField(t.type || 'expense'),
+    escapeCSVField(t.title || ''),
+    escapeCSVField(t.category || ''),
+    Number(t.amount || 0).toFixed(2),
+    escapeCSVField(t.paymentMethod || ''),
+    escapeCSVField(t.notes || ''),
+    escapeCSVField(t.id || ''),
+  ].join(','));
+
+  const csvContent = [headerRow, ...rows].join('\r\n');
+
+  // Prefix with UTF-8 BOM (\uFEFF) so Excel on Windows properly recognizes UTF-8 encoding
+  const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  
   const link = document.createElement('a');
-  link.setAttribute('href', encodedUri);
+  link.href = url;
   link.setAttribute('download', `RupeeWise_Transactions_${new Date().toISOString().slice(0, 10)}.csv`);
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
+  URL.revokeObjectURL(url);
 };
 
 /**
  * Export complete application data to JSON backup
  */
 export const downloadJSONBackup = (data) => {
-  const jsonString = `data:text/json;charset=utf-8,${encodeURIComponent(
-    JSON.stringify(data, null, 2)
-  )}`;
+  const jsonString = JSON.stringify(data, null, 2);
+  const blob = new Blob([jsonString], { type: 'application/json;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+
   const link = document.createElement('a');
-  link.setAttribute('href', jsonString);
+  link.href = url;
   link.setAttribute('download', `RupeeWise_Backup_${new Date().toISOString().slice(0, 10)}.json`);
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
+  URL.revokeObjectURL(url);
 };

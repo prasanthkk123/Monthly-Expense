@@ -3,7 +3,6 @@ import { useLocalStorage } from './hooks/useLocalStorage';
 import { getSampleTransactions } from './utils/sampleData';
 import { Navbar } from './components/Navbar';
 import { SummaryCards } from './components/SummaryCards';
-import { QuickInsights } from './components/QuickInsights';
 import { AnalyticsCharts } from './components/AnalyticsCharts';
 import { TransactionList } from './components/TransactionList';
 import { TransactionModal } from './components/TransactionModal';
@@ -179,11 +178,6 @@ export default function App() {
         <SummaryCards
           transactions={filteredTransactions}
           selectedMonth={selectedMonth}
-        />
-
-        {/* Smart Insights Banner */}
-        <QuickInsights
-          transactions={filteredTransactions}
         />
 
         {/* Visual Analytics Charts */}

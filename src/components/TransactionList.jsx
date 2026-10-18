@@ -1,16 +1,10 @@
 import React, { useState, useMemo } from 'react';
 import { 
   Search, 
-  Filter, 
-  ArrowUpDown, 
   Trash2, 
   Edit3, 
-  ArrowUpRight, 
-  ArrowDownRight,
   Download,
-  Calendar,
-  CreditCard,
-  Tag
+  Calendar
 } from 'lucide-react';
 import { formatINR, formatDate, getCategoryMeta, downloadCSV } from '../utils/formatters';
 import { CategoryIcon } from './CategoryIcon';
@@ -85,22 +79,22 @@ export const TransactionList = ({
   }, [transactions, typeFilter, categoryFilter, paymentFilter, searchQuery, sortBy]);
 
   return (
-    <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-xs overflow-hidden">
+    <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-xs overflow-hidden w-full min-w-0">
       
       {/* Table Header & Controls Bar */}
-      <div className="p-4 sm:p-6 border-b border-slate-100 dark:border-slate-800 space-y-4">
+      <div className="p-3.5 sm:p-6 border-b border-slate-100 dark:border-slate-800 space-y-3 sm:space-y-4">
         
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="flex items-center justify-between gap-2 flex-wrap">
           <div>
-            <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
+            <h3 className="text-sm sm:text-lg font-bold text-slate-900 dark:text-white">
               Transactions History
             </h3>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
-              Showing {filteredTransactions.length} of {transactions.length} records
+            <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400">
+              {filteredTransactions.length} of {transactions.length} records
             </p>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 sm:gap-2">
             {selectedMonth !== 'all' && filteredTransactions.length > 0 && (
               <button
                 onClick={() => {
@@ -108,7 +102,7 @@ export const TransactionList = ({
                     onDeleteMonthlyData(selectedMonth);
                   }
                 }}
-                className="px-3 py-1.5 rounded-lg border border-rose-200 dark:border-rose-900/60 text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 font-medium text-xs flex items-center gap-1.5 cursor-pointer transition-colors"
+                className="px-2.5 py-1.5 rounded-lg border border-rose-200 dark:border-rose-900/60 text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 font-semibold text-[11px] sm:text-xs flex items-center gap-1 cursor-pointer transition-colors"
                 title="Delete all records for this selected month"
               >
                 <Trash2 className="w-3.5 h-3.5" />
@@ -119,7 +113,7 @@ export const TransactionList = ({
             <button
               onClick={() => downloadCSV(filteredTransactions)}
               disabled={filteredTransactions.length === 0}
-              className="px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 font-medium text-xs flex items-center gap-1.5 cursor-pointer disabled:opacity-40 transition-colors"
+              className="px-2.5 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 font-semibold text-[11px] sm:text-xs flex items-center gap-1 cursor-pointer disabled:opacity-40 transition-colors"
               title="Download CSV for Excel or Google Sheets"
             >
               <Download className="w-3.5 h-3.5" />
@@ -129,10 +123,10 @@ export const TransactionList = ({
         </div>
 
         {/* Filter & Search Controls */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-12 gap-2 sm:gap-3 w-full">
           
-          {/* Search box */}
-          <div className="relative lg:col-span-4">
+          {/* Search box - full width on mobile */}
+          <div className="relative col-span-2 lg:col-span-4">
             <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
             <input
               type="text"
@@ -143,11 +137,11 @@ export const TransactionList = ({
             />
           </div>
 
-          {/* Type Pills */}
-          <div className="flex items-center rounded-xl bg-slate-100 dark:bg-slate-800 p-1 lg:col-span-3">
+          {/* Type Pills - full width on mobile */}
+          <div className="col-span-2 lg:col-span-3 flex items-center rounded-xl bg-slate-100 dark:bg-slate-800 p-1">
             <button
               onClick={() => setTypeFilter('all')}
-              className={`flex-1 py-1.5 text-xs font-semibold rounded-lg transition-all cursor-pointer ${
+              className={`flex-1 py-1 text-[11px] sm:text-xs font-semibold rounded-lg transition-all cursor-pointer ${
                 typeFilter === 'all'
                   ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs'
                   : 'text-slate-500 hover:text-slate-900 dark:hover:text-slate-200'
@@ -157,7 +151,7 @@ export const TransactionList = ({
             </button>
             <button
               onClick={() => setTypeFilter('expense')}
-              className={`flex-1 py-1.5 text-xs font-semibold rounded-lg transition-all cursor-pointer ${
+              className={`flex-1 py-1 text-[11px] sm:text-xs font-semibold rounded-lg transition-all cursor-pointer ${
                 typeFilter === 'expense'
                   ? 'bg-white dark:bg-slate-700 text-rose-600 dark:text-rose-400 shadow-xs'
                   : 'text-slate-500 hover:text-slate-900 dark:hover:text-slate-200'
@@ -167,7 +161,7 @@ export const TransactionList = ({
             </button>
             <button
               onClick={() => setTypeFilter('income')}
-              className={`flex-1 py-1.5 text-xs font-semibold rounded-lg transition-all cursor-pointer ${
+              className={`flex-1 py-1 text-[11px] sm:text-xs font-semibold rounded-lg transition-all cursor-pointer ${
                 typeFilter === 'income'
                   ? 'bg-white dark:bg-slate-700 text-emerald-600 dark:text-emerald-400 shadow-xs'
                   : 'text-slate-500 hover:text-slate-900 dark:hover:text-slate-200'
@@ -177,13 +171,13 @@ export const TransactionList = ({
             </button>
           </div>
 
-          {/* Category Dropdown */}
-          <div className="lg:col-span-2">
+          {/* Category Dropdown - half width on mobile */}
+          <div className="col-span-1 lg:col-span-2">
             <select
               aria-label="Filter by category"
               value={categoryFilter}
               onChange={(e) => setCategoryFilter(e.target.value)}
-              className="w-full py-2 px-3 text-xs sm:text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 focus:outline-hidden focus:ring-2 focus:ring-emerald-500"
+              className="w-full py-2 px-2 sm:px-3 text-xs sm:text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 focus:outline-hidden focus:ring-2 focus:ring-emerald-500 truncate"
             >
               <option value="all">All Categories</option>
               {uniqueCategories.map((c) => (
@@ -192,13 +186,13 @@ export const TransactionList = ({
             </select>
           </div>
 
-          {/* Payment Method Dropdown */}
-          <div className="lg:col-span-2">
+          {/* Payment Method Dropdown - half width on mobile */}
+          <div className="col-span-1 lg:col-span-2">
             <select
               aria-label="Filter by payment method"
               value={paymentFilter}
               onChange={(e) => setPaymentFilter(e.target.value)}
-              className="w-full py-2 px-3 text-xs sm:text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 focus:outline-hidden focus:ring-2 focus:ring-emerald-500"
+              className="w-full py-2 px-2 sm:px-3 text-xs sm:text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 focus:outline-hidden focus:ring-2 focus:ring-emerald-500 truncate"
             >
               <option value="all">All Payment Modes</option>
               {uniquePaymentMethods.map((m) => (
@@ -207,8 +201,8 @@ export const TransactionList = ({
             </select>
           </div>
 
-          {/* Sort By Dropdown */}
-          <div className="lg:col-span-1">
+          {/* Sort By Dropdown - full width on mobile */}
+          <div className="col-span-2 lg:col-span-1">
             <select
               aria-label="Sort transactions"
               value={sortBy}
@@ -228,19 +222,19 @@ export const TransactionList = ({
       {/* Transactions List */}
       <div className="divide-y divide-slate-100 dark:divide-slate-800/60 max-h-[600px] overflow-y-auto">
         {filteredTransactions.length === 0 ? (
-          <div className="py-16 text-center px-4">
-            <div className="w-12 h-12 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center mx-auto mb-3 text-slate-400">
-              <Search className="w-5 h-5" />
+          <div className="py-12 sm:py-16 text-center px-4">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center mx-auto mb-2.5 text-slate-400">
+              <Search className="w-4 h-4 sm:w-5 sm:h-5" />
             </div>
-            <h4 className="font-semibold text-slate-700 dark:text-slate-300 text-sm">
+            <h4 className="font-semibold text-slate-700 dark:text-slate-300 text-xs sm:text-sm">
               No transactions match your filters
             </h4>
-            <p className="text-xs text-slate-400 mt-1 max-w-sm mx-auto">
+            <p className="text-[11px] text-slate-400 mt-0.5 max-w-sm mx-auto">
               Try adjusting your search query, changing the date range, or add a new record.
             </p>
             <button
               onClick={onOpenAddModal}
-              className="mt-4 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-xs cursor-pointer shadow-xs"
+              className="mt-3 px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-xs cursor-pointer shadow-xs"
             >
               + Add Transaction
             </button>
@@ -253,25 +247,23 @@ export const TransactionList = ({
             return (
               <div
                 key={tx.id}
-                className="p-4 sm:px-6 flex items-center justify-between gap-3 hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors group"
+                className="p-3 sm:px-6 flex items-center justify-between gap-2.5 sm:gap-3 hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors group"
               >
                 {/* Left side: Icon + Title + Meta */}
-                <div className="flex items-center gap-3.5 min-w-0">
+                <div className="flex items-center gap-2.5 sm:gap-3.5 min-w-0 flex-1">
                   <div
-                    className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl flex items-center justify-center shrink-0 shadow-xs"
+                    className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl flex items-center justify-center shrink-0 shadow-xs"
                     style={{ backgroundColor: `${meta.color}18`, color: meta.color }}
                   >
-                    <CategoryIcon name={meta.icon} className="w-5 h-5" />
+                    <CategoryIcon name={meta.icon} className="w-4 h-4 sm:w-5 sm:h-5" />
                   </div>
 
-                  <div className="min-w-0">
-                    <div className="flex items-center gap-2">
-                      <h4 className="font-semibold text-sm sm:text-base text-slate-900 dark:text-slate-100 truncate">
-                        {tx.title}
-                      </h4>
-                    </div>
+                  <div className="min-w-0 flex-1">
+                    <h4 className="font-semibold text-xs sm:text-base text-slate-900 dark:text-slate-100 truncate">
+                      {tx.title}
+                    </h4>
 
-                    <div className="flex items-center flex-wrap gap-x-2 gap-y-1 mt-0.5 text-xs text-slate-500 dark:text-slate-400">
+                    <div className="flex items-center flex-wrap gap-x-1.5 gap-y-0.5 mt-0.5 text-[11px] sm:text-xs text-slate-500 dark:text-slate-400">
                       <span className="font-medium text-slate-600 dark:text-slate-300">
                         {tx.category}
                       </span>
@@ -280,7 +272,7 @@ export const TransactionList = ({
                       {tx.paymentMethod && (
                         <>
                           <span>•</span>
-                          <span className="px-1.5 py-0.2 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 text-[11px]">
+                          <span className="px-1 py-0.2 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 text-[10px]">
                             {tx.paymentMethod}
                           </span>
                         </>
@@ -295,10 +287,10 @@ export const TransactionList = ({
                 </div>
 
                 {/* Right side: Amount + Action buttons */}
-                <div className="flex items-center gap-3 shrink-0">
+                <div className="flex items-center gap-2 sm:gap-3 shrink-0">
                   <div className="text-right">
                     <span
-                      className={`text-base sm:text-lg font-bold tracking-tight ${
+                      className={`text-xs sm:text-base font-bold tracking-tight ${
                         isIncome ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-900 dark:text-slate-100'
                       }`}
                     >
@@ -306,21 +298,21 @@ export const TransactionList = ({
                     </span>
                   </div>
 
-                  {/* Actions (always visible on mobile, hover on desktop) */}
-                  <div className="flex items-center gap-1 opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity">
+                  {/* Actions */}
+                  <div className="flex items-center gap-0.5 sm:gap-1">
                     <button
                       onClick={() => onEditTransaction(tx)}
                       title="Edit transaction"
-                      className="p-1.5 rounded-lg text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                      className="p-1 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
                     >
-                      <Edit3 className="w-4 h-4" />
+                      <Edit3 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                     </button>
                     <button
                       onClick={() => onDeleteTransaction(tx.id)}
                       title="Delete transaction"
-                      className="p-1.5 rounded-lg text-slate-500 hover:text-rose-600 dark:text-slate-400 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors cursor-pointer"
+                      className="p-1 rounded-lg text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors cursor-pointer"
                     >
-                      <Trash2 className="w-4 h-4" />
+                      <Trash2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                     </button>
                   </div>
                 </div>

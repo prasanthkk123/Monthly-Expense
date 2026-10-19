@@ -24,6 +24,23 @@ export const INCOME_CATEGORIES = [
   { id: 'other_income', name: 'Other Income', icon: 'PlusCircle', color: '#64748b', bgLight: 'bg-slate-50 text-slate-600 dark:bg-slate-800 dark:text-slate-400' },
 ];
 
+export const PRESET_COLORS = [
+  '#f97316', // Orange
+  '#10b981', // Emerald
+  '#6366f1', // Indigo
+  '#eab308', // Yellow
+  '#06b6d4', // Cyan
+  '#ec4899', // Pink
+  '#8b5cf6', // Purple
+  '#ef4444', // Red/Rose
+  '#14b8a6', // Teal
+  '#3b82f6', // Blue
+  '#f59e0b', // Amber
+  '#d946ef', // Fuchsia
+  '#84cc16', // Lime
+  '#64748b', // Slate
+];
+
 export const PAYMENT_METHODS = [
   { id: 'upi', name: 'UPI (GPay / PhonePe / Paytm)', icon: 'Smartphone' },
   { id: 'credit_card', name: 'Credit Card', icon: 'CreditCard' },

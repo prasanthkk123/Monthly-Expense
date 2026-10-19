@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { getSampleTransactions } from './utils/sampleData';
+import { EXPENSE_CATEGORIES, INCOME_CATEGORIES } from './constants/categories';
 import { Navbar } from './components/Navbar';
 import { SummaryCards } from './components/SummaryCards';
 import { AnalyticsCharts } from './components/AnalyticsCharts';
@@ -9,6 +10,7 @@ import { TransactionModal } from './components/TransactionModal';
 import { DataBackupModal } from './components/DataBackupModal';
 import { LoginScreen } from './components/LoginScreen';
 import { ChangePasswordModal } from './components/ChangePasswordModal';
+import { CategoryManagerModal } from './components/CategoryManagerModal';
 import { Plus } from 'lucide-react';
 
 export default function App() {
@@ -22,6 +24,8 @@ export default function App() {
   // Persistent State in LocalStorage
   const [transactions, setTransactions] = useLocalStorage('rupeewise_transactions', () => getSampleTransactions());
   const [darkMode, setDarkMode] = useLocalStorage('rupeewise_darkmode', false);
+  const [expenseCategories, setExpenseCategories] = useLocalStorage('rupeewise_expense_cats', EXPENSE_CATEGORIES);
+  const [incomeCategories, setIncomeCategories] = useLocalStorage('rupeewise_income_cats', INCOME_CATEGORIES);
 
   // Current selected month: defaults to current month YYYY-MM
   const currentMonthKey = useMemo(() => new Date().toISOString().slice(0, 7), []);
@@ -32,6 +36,7 @@ export default function App() {
   const [editingTransaction, setEditingTransaction] = useState(null);
   const [isBackupModalOpen, setIsBackupModalOpen] = useState(false);
   const [isChangePasswordModalOpen, setIsChangePasswordModalOpen] = useState(false);
+  const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
 
   // Handle Dark mode class on root HTML element and body
   useEffect(() => {
@@ -66,6 +71,68 @@ export default function App() {
   // Password change handler
   const handleChangePassword = (newPassword) => {
     setStoredPassword(newPassword);
+  };
+
+  // Category management handlers
+  const handleAddCategory = (type, newCat) => {
+    if (type === 'expense') {
+      setExpenseCategories((prev) => [...prev, newCat]);
+    } else {
+      setIncomeCategories((prev) => [...prev, newCat]);
+    }
+  };
+
+  const handleUpdateCategory = (type, categoryId, updatedData) => {
+    let oldName = '';
+    if (type === 'expense') {
+      setExpenseCategories((prev) =>
+        prev.map((c) => {
+          if (c.id === categoryId) {
+            oldName = c.name;
+            return { ...c, ...updatedData };
+          }
+          return c;
+        })
+      );
+    } else {
+      setIncomeCategories((prev) =>
+        prev.map((c) => {
+          if (c.id === categoryId) {
+            oldName = c.name;
+            return { ...c, ...updatedData };
+          }
+          return c;
+        })
+      );
+    }
+
+    // Update transactions matching old category name
+    if (oldName && updatedData.name && oldName !== updatedData.name) {
+      setTransactions((prev) =>
+        prev.map((t) => {
+          if (t.type === type && t.category === oldName) {
+            return { ...t, category: updatedData.name };
+          }
+          return t;
+        })
+      );
+    }
+  };
+
+  const handleDeleteCategory = (type, categoryId) => {
+    if (type === 'expense') {
+      setExpenseCategories((prev) => prev.filter((c) => c.id !== categoryId));
+    } else {
+      setIncomeCategories((prev) => prev.filter((c) => c.id !== categoryId));
+    }
+  };
+
+  const handleResetCategories = (type) => {
+    if (type === 'expense') {
+      setExpenseCategories(EXPENSE_CATEGORIES);
+    } else {
+      setIncomeCategories(INCOME_CATEGORIES);
+    }
   };
 
   // Compute available months dynamically from transactions
@@ -153,7 +220,7 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-200 pb-16 md:pb-0">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-200 pb-16 md:pb-0 overflow-x-hidden">
       
       {/* Top Sticky Navbar */}
       <Navbar
@@ -165,6 +232,7 @@ export default function App() {
         }}
         onOpenBackupModal={() => setIsBackupModalOpen(true)}
         onOpenChangePasswordModal={() => setIsChangePasswordModalOpen(true)}
+        onOpenCategoryManager={() => setIsCategoryModalOpen(true)}
         onLock={handleLock}
         selectedMonth={selectedMonth}
         setSelectedMonth={setSelectedMonth}
@@ -230,6 +298,20 @@ export default function App() {
         }}
         onSave={handleSaveTransaction}
         initialData={editingTransaction}
+        expenseCategories={expenseCategories}
+        incomeCategories={incomeCategories}
+        onOpenCategoryManager={() => setIsCategoryModalOpen(true)}
+      />
+
+      <CategoryManagerModal
+        isOpen={isCategoryModalOpen}
+        onClose={() => setIsCategoryModalOpen(false)}
+        expenseCategories={expenseCategories}
+        incomeCategories={incomeCategories}
+        onAddCategory={handleAddCategory}
+        onUpdateCategory={handleUpdateCategory}
+        onDeleteCategory={handleDeleteCategory}
+        onResetCategories={handleResetCategories}
       />
 
       <DataBackupModal

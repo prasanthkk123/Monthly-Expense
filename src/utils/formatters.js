@@ -55,9 +55,11 @@ export const formatDate = (dateStr) => {
 /**
  * Lookup category metadata (color, icon, style)
  */
-export const getCategoryMeta = (categoryName, type = 'expense') => {
-  const pool = type === 'income' ? INCOME_CATEGORIES : EXPENSE_CATEGORIES;
-  const found = pool.find((c) => c.name.toLowerCase() === (categoryName || '').toLowerCase());
+export const getCategoryMeta = (categoryName, type = 'expense', customList = null) => {
+  const pool = customList && customList.length > 0 
+    ? customList 
+    : (type === 'income' ? INCOME_CATEGORIES : EXPENSE_CATEGORIES);
+  const found = pool.find((c) => (c.name || '').toLowerCase() === (categoryName || '').toLowerCase());
   if (found) return found;
 
   // Fallback

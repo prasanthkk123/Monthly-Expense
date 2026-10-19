@@ -9,8 +9,7 @@ import {
   Menu, 
   X,
   ChevronDown,
-  Database,
-  ShieldCheck
+  Tag
 } from 'lucide-react';
 
 export const Navbar = ({ 
@@ -19,6 +18,7 @@ export const Navbar = ({
   onOpenAddModal, 
   onOpenBackupModal, 
   onOpenChangePasswordModal, 
+  onOpenCategoryManager,
   onLock, 
   selectedMonth, 
   setSelectedMonth, 
@@ -65,6 +65,16 @@ export const Navbar = ({
                   <ChevronDown className="w-4 h-4" />
                 </div>
               </div>
+
+              {/* Categories Button */}
+              <button
+                onClick={onOpenCategoryManager}
+                title="Manage Categories"
+                className="px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-medium text-xs sm:text-sm flex items-center gap-1.5 transition-colors cursor-pointer"
+              >
+                <Tag className="w-4 h-4 text-emerald-500" />
+                <span>Categories</span>
+              </button>
 
               {/* Data & Backup Button */}
               <button
@@ -167,16 +177,27 @@ export const Navbar = ({
           {/* Mobile Slide-Down Drawer */}
           {mobileMenuOpen && (
             <div className="md:hidden py-3 border-t border-slate-100 dark:border-slate-800 animate-in slide-in-from-top-2 duration-150">
-              <div className="grid grid-cols-3 gap-2">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                <button
+                  onClick={() => {
+                    onOpenCategoryManager();
+                    setMobileMenuOpen(false);
+                  }}
+                  className="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 bg-slate-50 dark:bg-slate-800/80 font-medium text-xs flex items-center justify-center gap-2 cursor-pointer text-center active:scale-95 transition-all"
+                >
+                  <Tag className="w-4 h-4 text-emerald-500" />
+                  <span className="text-xs font-semibold">Categories</span>
+                </button>
+
                 <button
                   onClick={() => {
                     onOpenBackupModal();
                     setMobileMenuOpen(false);
                   }}
-                  className="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 bg-slate-50 dark:bg-slate-800/80 font-medium text-xs flex flex-col items-center justify-center gap-1.5 cursor-pointer text-center active:scale-95 transition-all"
+                  className="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 bg-slate-50 dark:bg-slate-800/80 font-medium text-xs flex items-center justify-center gap-2 cursor-pointer text-center active:scale-95 transition-all"
                 >
                   <Download className="w-4 h-4 text-teal-500" />
-                  <span className="text-[11px] font-semibold">Data & Backup</span>
+                  <span className="text-xs font-semibold">Data & Backup</span>
                 </button>
 
                 <button
@@ -184,10 +205,10 @@ export const Navbar = ({
                     onOpenChangePasswordModal();
                     setMobileMenuOpen(false);
                   }}
-                  className="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 bg-slate-50 dark:bg-slate-800/80 font-medium text-xs flex flex-col items-center justify-center gap-1.5 cursor-pointer text-center active:scale-95 transition-all"
+                  className="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 bg-slate-50 dark:bg-slate-800/80 font-medium text-xs flex items-center justify-center gap-2 cursor-pointer text-center active:scale-95 transition-all"
                 >
                   <KeyRound className="w-4 h-4 text-amber-500" />
-                  <span className="text-[11px] font-semibold">Password</span>
+                  <span className="text-xs font-semibold">Password</span>
                 </button>
 
                 <button
@@ -195,10 +216,10 @@ export const Navbar = ({
                     onLock();
                     setMobileMenuOpen(false);
                   }}
-                  className="p-2.5 rounded-xl border border-rose-200 dark:border-rose-900/60 text-rose-600 dark:text-rose-400 bg-rose-50/50 dark:bg-rose-950/20 font-medium text-xs flex flex-col items-center justify-center gap-1.5 cursor-pointer text-center active:scale-95 transition-all"
+                  className="p-2.5 rounded-xl border border-rose-200 dark:border-rose-900/60 text-rose-600 dark:text-rose-400 bg-rose-50/50 dark:bg-rose-950/20 font-medium text-xs flex items-center justify-center gap-2 cursor-pointer text-center active:scale-95 transition-all"
                 >
                   <Lock className="w-4 h-4" />
-                  <span className="text-[11px] font-semibold">Lock App</span>
+                  <span className="text-xs font-semibold">Lock App</span>
                 </button>
               </div>
             </div>
